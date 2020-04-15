@@ -1,13 +1,24 @@
 <?php
-
 function __autoload($className)
 {
-    if (is_file(dirname(__FILE__) . '/' . $className . '.php')) {
-        include_once dirname(__FILE__) . '/' . $className . '.php';
-        return true;
-    } elseif (is_file(dirname(__FILE__) . '/' . strtolower($className) . '.php')) {
-        include_once dirname(__FILE__) . '/' . strtolower($className) . '.php';
+    $arrClass = explode('_', $className);
+    $class_path  = dirname(__FILE__);
+    if ($arrClass[count($arrClass) - 1] == 'Testable') {
+        $class_path .= '/../Tests/classes';
+    }
+    foreach ($arrClass as $class_point) {
+        if ($class_point != 'Demo' && $class_point != 'Testable') {
+            $class_path .= '/' . $class_point;
+        }
+    }
+    if ($arrClass[count($arrClass) - 1] == 'Testable') {
+        $class_path .= 'Test';
+    }
+    if (is_file($class_path . '.php')) {
+        include_once $class_path . '.php';
         return true;
     }
     return false;
 }
+
+spl_autoload_register('__autoload');
